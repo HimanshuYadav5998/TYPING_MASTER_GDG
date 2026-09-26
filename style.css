@@ -1,0 +1,1095 @@
+/* ==========================================================================
+   TYPE//TANK - Dark Retro DOS / Arcade Terminal Styling
+   ========================================================================== */
+
+:root {
+  --bg-deep: #020402;
+  --bg-panel: rgba(4, 14, 6, 0.92);
+  --bg-darker: #010301;
+  --border-green: #00ff66;
+  --border-dim: #006622;
+  --text-main: #33ff88;
+  --text-white: #f0fff4;
+  --text-dim: #009944;
+  --text-neon: #00f0ff;
+  --text-amber: #ffaa00;
+  --text-crimson: #ff2244;
+  --glow-green: rgba(0, 255, 102, 0.35);
+  --glow-crimson: rgba(255, 34, 68, 0.45);
+  --font-arcade: 'Press Start 2P', monospace;
+  --font-term: 'VT323', monospace;
+  --font-mono: 'Share Tech Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #010201;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  user-select: none;
+}
+
+/* ==========================================================================
+   CRT Scanline & Phosphor Bloom Layer
+   ========================================================================== */
+#crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: 
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.38) 50%),
+    radial-gradient(circle at center, rgba(0, 255, 100, 0.03) 0%, rgba(0, 0, 0, 0.5) 100%);
+  background-size: 100% 3px, 100% 100%;
+  transition: opacity 0.2s ease;
+}
+
+#crt-overlay.crt-off {
+  opacity: 0;
+}
+
+/* Confetti Layer for Record Celebration */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ==========================================================================
+   Cabinet Enclosure & Aspect Ratio Scaler
+   ========================================================================== */
+#cabinet-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #010201;
+  overflow: hidden;
+}
+
+#arcade-cabinet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-deep);
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0, 255, 100, 0.05);
+  transition: width 0.2s ease, height 0.2s ease, border 0.2s ease;
+}
+
+/* 1. AUTO [SCREEN FIT] Mode */
+#arcade-cabinet.aspect-auto {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  border-radius: 0;
+}
+
+/* 2. 16:9 [WIDESCREEN] Mode */
+#arcade-cabinet.aspect-16-9 {
+  aspect-ratio: 16 / 9;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  border: 4px solid #142817;
+  box-shadow: 
+    0 0 60px rgba(0, 0, 0, 0.95),
+    inset 0 0 15px rgba(0, 255, 100, 0.15);
+}
+
+/* 3. 4:3 [CLASSIC CRT] Mode */
+#arcade-cabinet.aspect-4-3 {
+  aspect-ratio: 4 / 3;
+  width: min(100vw, calc(100vh * 4 / 3));
+  height: min(100vh, calc(100vw * 3 / 4));
+  border: 5px solid #142817;
+  box-shadow: 
+    0 0 70px rgba(0, 0, 0, 0.95),
+    inset 0 0 15px rgba(0, 255, 100, 0.15);
+}
+
+/* ==========================================================================
+   Header Marquee HUD
+   ========================================================================== */
+#marquee-header {
+  height: 42px;
+  min-height: 42px;
+  background: rgba(2, 10, 4, 0.96);
+  border-bottom: 2px solid var(--border-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: var(--font-term);
+  font-size: 17px;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(0, 255, 100, 0.12);
+  z-index: 100;
+}
+
+.dos-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left, .header-center, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-glitch {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--border-green);
+  letter-spacing: -0.5px;
+}
+
+.header-status-badge {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.operator-badge {
+  color: var(--text-neon);
+}
+
+#header-callsign-display {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   Buttons & Controls (Strict Retro DOS Styling)
+   ========================================================================== */
+.retro-btn {
+  background: #031406;
+  border: 1px solid var(--border-green);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  outline: none;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: inset 0 0 4px rgba(0, 255, 100, 0.1);
+}
+
+.retro-btn:hover {
+  background: var(--border-green);
+  color: #010602;
+  box-shadow: 0 0 10px var(--border-green);
+  font-weight: bold;
+}
+
+.retro-btn:active {
+  transform: translateY(1px);
+}
+
+.retro-btn.btn-xs {
+  font-family: var(--font-term);
+  font-size: 14px;
+  padding: 2px 7px;
+  height: 24px;
+}
+
+.retro-btn.btn-lg {
+  font-size: 15px;
+  font-weight: bold;
+  padding: 10px 22px;
+}
+
+.retro-btn.btn-primary {
+  border-color: #00ff88;
+  color: #ffffff;
+  background: #04240c;
+  box-shadow: 0 0 8px rgba(0, 255, 120, 0.25);
+}
+
+.retro-btn.btn-primary:hover {
+  background: #00ff88;
+  color: #010602;
+}
+
+.retro-btn.btn-danger {
+  border-color: var(--text-crimson);
+  color: var(--text-crimson);
+  background: #240408;
+}
+
+.retro-btn.btn-danger:hover {
+  background: var(--text-crimson);
+  color: #ffffff;
+  box-shadow: 0 0 12px var(--text-crimson);
+}
+
+/* ==========================================================================
+   Screen Sections Architecture (100% Zoom Fit, No Top-Clipping)
+   ========================================================================== */
+.screen-section {
+  display: none;
+  width: 100%;
+  height: calc(100% - 42px);
+  position: relative;
+  overflow: hidden;
+}
+
+.screen-section.active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Safe scrollable container avoiding flex-center clipping */
+.screen-scroll-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: clamp(8px, 1.5vh, 16px);
+}
+
+/* Custom retro scrollbar */
+.screen-scroll-container::-webkit-scrollbar,
+.table-scroll-wrap::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.screen-scroll-container::-webkit-scrollbar-track,
+.table-scroll-wrap::-webkit-scrollbar-track {
+  background: #020803;
+}
+.screen-scroll-container::-webkit-scrollbar-thumb,
+.table-scroll-wrap::-webkit-scrollbar-thumb {
+  background: var(--border-dim);
+  border: 1px solid var(--border-green);
+}
+
+/* DOS Angular Container */
+.dos-container {
+  margin: auto 0;
+  width: 100%;
+  max-width: 960px;
+  background: var(--bg-panel);
+  border: 2px solid var(--border-green);
+  box-shadow: 
+    0 0 20px rgba(0, 255, 100, 0.12),
+    inset 0 0 12px rgba(0, 255, 100, 0.08);
+  padding: clamp(10px, 1.8vh, 18px);
+}
+
+.dos-title-bar {
+  font-family: var(--font-arcade);
+  font-size: clamp(10px, 1.4vw, 13px);
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--border-green);
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--border-dim);
+  margin-bottom: clamp(8px, 1.4vh, 14px);
+  letter-spacing: 0.5px;
+}
+
+.dos-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(8px, 1.4vh, 14px);
+  border-top: 1px dashed var(--border-dim);
+  padding-top: 10px;
+}
+
+.dos-actions.space-between {
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   SCREEN 1: LOGIN (OPERATOR CALLSIGN)
+   ========================================================================== */
+.login-box {
+  max-width: 680px;
+  text-align: center;
+}
+
+.ascii-banner {
+  font-family: monospace;
+  font-size: 10px;
+  line-height: 1.15;
+  color: var(--border-green);
+  white-space: pre;
+  display: inline-block;
+  margin-bottom: 8px;
+  text-shadow: 0 0 6px var(--border-green);
+}
+
+.terminal-subhead {
+  font-family: var(--font-term);
+  font-size: 18px;
+  color: var(--text-neon);
+  margin-bottom: 14px;
+}
+
+.dos-content-block {
+  text-align: left;
+  background: #020904;
+  border: 1px solid var(--border-dim);
+  padding: 14px 18px;
+  margin-bottom: 12px;
+}
+
+.dos-prompt-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+}
+
+.prompt-label {
+  color: var(--border-green);
+  font-weight: bold;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #010602;
+  border: 1px solid var(--border-green);
+  padding: 4px 8px;
+}
+
+.prompt-prefix, .prompt-suffix {
+  color: var(--border-green);
+  font-weight: bold;
+}
+
+.dos-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  width: 140px;
+  text-transform: uppercase;
+}
+
+.blinking-cursor {
+  color: var(--border-green);
+  animation: blink 0.9s infinite step-start;
+  font-size: 18px;
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.quick-callsigns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.chip-preset {
+  background: #041608;
+  border: 1px solid var(--border-dim);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.chip-preset:hover {
+  border-color: var(--border-green);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   SCREEN 2: SETTINGS (ARSENAL & DISPLAY CONFIGURATION)
+   ========================================================================== */
+.settings-box {
+  max-width: 960px;
+}
+
+/* 4 Interactive Mode Cards */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: clamp(8px, 1.2vh, 12px);
+}
+
+.mode-card {
+  background: #030e05;
+  border: 1px solid var(--border-dim);
+  padding: 10px 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.mode-card:hover {
+  border-color: var(--border-green);
+  background: #051608;
+}
+
+.mode-card.active {
+  border: 2px solid var(--border-green);
+  background: #07200c;
+  box-shadow: 0 0 10px rgba(0, 255, 100, 0.25);
+}
+
+.mode-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.mode-card.active .mode-header {
+  color: #ffffff;
+}
+
+.mode-num {
+  color: var(--text-neon);
+}
+
+.mode-spec {
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.mode-samples {
+  font-size: 12px;
+  background: #010602;
+  border: 1px dashed #004418;
+  padding: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mode-samples code {
+  color: var(--text-white);
+  font-size: 11px;
+}
+
+.mode-badge {
+  font-family: var(--font-term);
+  font-size: 13px;
+  color: var(--border-green);
+  text-align: right;
+  margin-top: auto;
+}
+
+/* Config row split */
+.config-row-quad {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: clamp(8px, 1.2vh, 12px);
+}
+
+.config-col {
+  background: #020904;
+  border: 1px solid var(--border-dim);
+  padding: 10px 12px;
+}
+
+.section-label {
+  font-family: var(--font-term);
+  font-size: 16px;
+  color: var(--text-neon);
+  margin-bottom: 8px;
+}
+
+/* Matrix Toggles */
+.matrix-toggles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.toggle-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #041206;
+  border: 1px solid var(--border-dim);
+  padding: 5px 8px;
+}
+
+.toggle-chip input {
+  display: none;
+}
+
+.toggle-chip:hover {
+  border-color: var(--border-green);
+}
+
+.toggle-chip input:checked + .toggle-indicator {
+  color: var(--border-green);
+}
+
+.toggle-chip.locked {
+  cursor: default;
+  opacity: 0.85;
+}
+
+/* Aspect buttons in settings */
+.aspect-buttons-group {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-aspect-choice {
+  flex: 1;
+  background: #031006;
+  border: 1px solid var(--border-dim);
+  color: var(--text-main);
+  padding: 6px 8px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.btn-aspect-choice:hover {
+  border-color: var(--border-green);
+}
+
+.btn-aspect-choice.active {
+  border: 1px solid var(--border-green);
+  background: #06200c;
+  box-shadow: 0 0 8px rgba(0, 255, 100, 0.2);
+}
+
+.aspect-key {
+  font-size: 10px;
+  color: var(--text-neon);
+}
+
+.aspect-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.aspect-desc {
+  font-size: 10px;
+}
+
+/* Preview Bar */
+.preview-bar-container {
+  background: #020803;
+  border: 1px solid var(--border-dim);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.preview-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.preview-chips-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.preview-chip {
+  background: #041808;
+  border: 1px solid #00551c;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 2px 7px;
+}
+
+/* ==========================================================================
+   SCREEN 3: INSTRUCTIONS (COMBAT BRIEFING)
+   ========================================================================== */
+.briefing-box {
+  max-width: 960px;
+}
+
+.directives-2col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.directive-card {
+  background: #020a04;
+  border: 1px solid var(--border-dim);
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.directive-text {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--text-white);
+  margin-top: 3px;
+}
+
+.directive-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.directive-title {
+  font-weight: bold;
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.highlight-card {
+  border-color: var(--border-green);
+  background: #041a0a;
+}
+
+.bonus-card {
+  border-color: rgba(255, 34, 68, 0.45);
+  background: rgba(35, 4, 10, 0.7);
+}
+
+.alert-card {
+  border-color: rgba(255, 170, 0, 0.4);
+}
+
+.shortcuts-mini-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.shortcuts-mini-grid code {
+  color: var(--text-neon);
+}
+
+.briefing-cta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-dim);
+}
+
+.ready-flash-prompt {
+  font-family: var(--font-term);
+  font-size: 18px;
+  color: var(--text-amber);
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* ==========================================================================
+   SCREEN 4: GAME (BALLISTIC DEFENSE ARENA)
+   ========================================================================== */
+.game-hud {
+  height: 38px;
+  min-height: 38px;
+  padding: 0 10px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hud-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hud-lbl {
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.hud-val {
+  font-family: var(--font-mono);
+  font-weight: bold;
+  font-size: 15px;
+  color: #ffffff;
+}
+
+.hud-health-col {
+  gap: 8px;
+}
+
+.health-bar-track {
+  width: 90px;
+  height: 12px;
+  background: #020803;
+  border: 1px solid var(--border-dim);
+  overflow: hidden;
+}
+
+.health-bar-fill {
+  height: 100%;
+  transition: width 0.15s ease, background 0.15s ease;
+}
+
+.health-good {
+  background: #00ff88;
+  box-shadow: 0 0 6px #00ff88;
+}
+
+.health-warn {
+  background: #ffaa00;
+  box-shadow: 0 0 6px #ffaa00;
+}
+
+.health-critical {
+  background: #ff2244;
+  box-shadow: 0 0 8px #ff2244;
+}
+
+#canvas-wrapper {
+  flex: 1;
+  width: 100%;
+  height: calc(100% - 38px);
+  position: relative;
+  overflow: hidden;
+  background: #020503;
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ==========================================================================
+   SCREEN 5: RESULT (SORTIE DEBRIEF & CELEBRATION)
+   ========================================================================== */
+.debrief-box {
+  max-width: 820px;
+}
+
+.record-banner {
+  font-family: var(--font-arcade);
+  font-size: clamp(12px, 1.8vw, 16px);
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.record-banner.debrief-normal {
+  color: #ffffff;
+  border: 1px solid var(--border-dim);
+  background: #031206;
+}
+
+.record-banner.pb-celebration {
+  color: #00f0ff;
+  border: 2px solid #00f0ff;
+  background: rgba(0, 50, 40, 0.9);
+  text-shadow: 0 0 14px #00f0ff;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  animation: arcadeBlink 0.6s infinite alternate;
+}
+
+@keyframes arcadeBlink {
+  0% { transform: scale(0.99); filter: brightness(1); }
+  100% { transform: scale(1.01); filter: brightness(1.3); }
+}
+
+.result-delta-box {
+  font-family: var(--font-term);
+  font-size: 19px;
+  background: #020904;
+  border: 1px dashed var(--border-dim);
+  padding: 8px;
+  margin-bottom: 14px;
+}
+
+.result-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.metric-card {
+  background: #020a04;
+  border: 1px solid var(--border-dim);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-family: var(--font-term);
+  font-size: 15px;
+  color: var(--text-dim);
+}
+
+.metric-val {
+  font-family: var(--font-mono);
+  font-size: clamp(20px, 2.4vw, 28px);
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.metric-sub {
+  font-size: 11px;
+}
+
+/* ==========================================================================
+   SCREEN 6: MY RECORDS (FLIGHT LOGS)
+   ========================================================================== */
+.records-box {
+  max-width: 960px;
+}
+
+.records-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.overview-card {
+  background: #020904;
+  border: 1px solid var(--border-dim);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ov-label {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.ov-val {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* Mode PB Quad */
+.mode-pb-quad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.pb-card {
+  background: #030d05;
+  border: 1px solid var(--border-dim);
+  padding: 8px 10px;
+}
+
+.pb-title {
+  font-size: 11px;
+  color: var(--text-neon);
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.pb-score {
+  font-size: 16px;
+  font-weight: bold;
+  color: #00ff88;
+  display: block;
+}
+
+.pb-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.pb-none {
+  font-size: 12px;
+  color: #00551c;
+}
+
+.flight-logs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.filter-tabs-row {
+  display: flex;
+  gap: 4px;
+}
+
+.filter-tab {
+  background: #020803;
+  border: 1px solid var(--border-dim);
+  color: var(--text-dim);
+  font-family: var(--font-term);
+  font-size: 14px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.filter-tab:hover {
+  color: #ffffff;
+  border-color: var(--border-green);
+}
+
+.filter-tab.active {
+  background: #05200c;
+  color: var(--border-green);
+  border-color: var(--border-green);
+  font-weight: bold;
+}
+
+.table-scroll-wrap {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border-dim);
+  background: #010602;
+}
+
+.dos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.dos-table th {
+  background: #031206;
+  color: var(--text-dim);
+  font-family: var(--font-term);
+  font-size: 14px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-green);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.dos-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #002b0c;
+  color: var(--text-white);
+}
+
+.dos-table tr:hover td {
+  background: #041808;
+}
+
+.badge-mode {
+  background: #031607;
+  border: 1px solid var(--border-dim);
+  padding: 1px 4px;
+  font-size: 11px;
+  color: var(--text-neon);
+}
+
+.badge-pb {
+  background: rgba(0, 240, 255, 0.2);
+  color: #00f0ff;
+  border: 1px solid #00f0ff;
+  font-size: 10px;
+  padding: 1px 3px;
+  margin-left: 4px;
+}
+
+/* ==========================================================================
+   Modal Dialogs (Callsign Reassignment)
+   ========================================================================== */
+.retro-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  padding: 16px;
+}
+
+.retro-modal-backdrop.active {
+  display: flex;
+}
+
+.modal-box {
+  max-width: 500px;
+  background: #020a04;
+}
+
+/* ==========================================================================
+   Utility Classes & Color Highlights
+   ========================================================================== */
+.text-score { color: #00ff88; text-shadow: 0 0 6px rgba(0, 255, 120, 0.4); }
+.text-wpm { color: var(--text-neon); }
+.text-neon { color: var(--text-neon); }
+.text-amber { color: var(--text-amber); }
+.text-crimson { color: var(--text-crimson); }
+.text-white { color: #ffffff; }
+.text-dim { color: var(--text-dim); }
+.text-center { text-align: center; }
+.text-xs { font-size: 11px; }
+
+.mb-1 { margin-bottom: 4px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.py-4 { padding-top: 16px; padding-bottom: 16px; }
